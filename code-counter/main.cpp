@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
     {
         ext = string(argv[2]);
     }
-    
 
     cout << "we are looking at: " << path << endl;
 
@@ -40,16 +39,22 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-string exec(const char* cmd) {
+string exec(const char *cmd)
+{
     char buffer[128];
     std::string result = "";
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) throw std::runtime_error("popen() failed!");
-    try {
-        while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+    FILE *pipe = popen(cmd, "r");
+    if (!pipe)
+        throw std::runtime_error("popen() failed!");
+    try
+    {
+        while (fgets(buffer, sizeof(buffer), pipe) != NULL)
+        {
             result += buffer;
         }
-    } catch (int e) {
+    }
+    catch (int e)
+    {
         pclose(pipe);
         cout << "err: " << e << endl;
         throw;
@@ -58,16 +63,16 @@ string exec(const char* cmd) {
     return result;
 }
 
-int count(string path) 
+int count(string path)
 {
-    string cmd = "/bin/env wc -l '" + path + "'"; 
+    string cmd = "/bin/env wc -l '" + path + "'";
     string res = exec(cmd.c_str());
     string::size_type sz;
     return stoi(res, &sz);
 }
 
 bool isbinary(string path)
-{  
+{
     string cmdStr = "/bin/env file '" + path + "'";
     string res = exec(cmdStr.c_str());
     res = res.substr(res.find(":") + 1, res.length());
@@ -76,7 +81,7 @@ bool isbinary(string path)
     {
         return false;
     }
-    
+
     return true;
 }
 
@@ -84,35 +89,33 @@ void search(string path, string ext, string space)
 {
     /* Check read access. */
     int rval = access(path.c_str(), R_OK);
-    
+
     if (rval == 0)
-    for (const auto &entry : fs::directory_iterator(path))
-    {
-        bool isdir = entry.is_directory();
-        if (!isdir)
+        for (const auto &entry : fs::directory_iterator(path))
         {
-            if (ext != "")
+            bool isdir = entry.is_directory();
+            if (!isdir)
             {
-                string p = entry.path().string();
-                string fext = p.substr(p.find(".") + 1, p.length());
-                if (fext != ext)
+                if (ext != "")
                 {
-                    continue;
+                    string p = entry.path().string();
+                    string fext = p.substr(p.find(".") + 1, p.length());
+                    if (fext != ext)
+                    {
+                        continue;
+                    }
                 }
-                
+
+                if (!isbinary(entry.path()))
+                {
+                    cout << entry.path() << endl;
+                    cout << "lines: " << count(entry.path()) << endl;
+                }
             }
-                       
-            if (!isbinary(entry.path()))
+
+            if (isdir)
             {
-                cout << entry.path() << endl;
-                cout << "lines: " << count(entry.path()) << endl;
+                search(entry.path(), ext, space + "\t");
             }
-            
         }
-        
-        if (isdir)
-        {
-            search(entry.path(), ext, space + "\t");
-        }
-    }
 }
