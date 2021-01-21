@@ -6,8 +6,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define R_OK 4
+
 using namespace std;
 namespace fs = filesystem;
+
+int TOTAL_LINES = 0;
+int TOTAL_FILES = 0;
 
 void search(string path, string ext, string space);
 bool isbinary(string path);
@@ -35,6 +40,9 @@ int main(int argc, char *argv[])
     cout << "we are looking at: " << path << endl;
 
     search(path, ext, "");
+
+    cout << "TOTAL FILES: " << TOTAL_FILES << endl;
+    cout << "TOTAL LINES: " << TOTAL_LINES << endl;
 
     return 0;
 }
@@ -99,7 +107,8 @@ void search(string path, string ext, string space)
                 if (ext != "")
                 {
                     string p = entry.path().string();
-                    string fext = p.substr(p.find(".") + 1, p.length());
+                    string fext = p.substr(p.find_last_of(".") + 1, p.length());
+                    // cout << "P: " << p << " fext::" << fext << " ext: " << ext << endl;
                     if (fext != ext)
                     {
                         continue;
@@ -109,7 +118,10 @@ void search(string path, string ext, string space)
                 if (!isbinary(entry.path()))
                 {
                     cout << entry.path() << endl;
-                    cout << "lines: " << count(entry.path()) << endl;
+                    int lines_count = count(entry.path());
+                    TOTAL_LINES += lines_count;
+                    TOTAL_FILES++;
+                    cout << "lines: " << lines_count << endl;
                 }
             }
 
