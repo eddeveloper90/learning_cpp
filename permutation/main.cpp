@@ -61,7 +61,7 @@ void print_permutation(string word, string tmp)
     }
 }
 
-void get_index_array(int n, int length, int* array)
+void get_index_array(int n, int length, int *array)
 {
     int l = length;
     for (int i = 0; i < length; i++)
