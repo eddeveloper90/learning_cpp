@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++ -Wall ./bin/main.cpp -o main
+g++ -Wall ./main.cpp -o ./bin/main
