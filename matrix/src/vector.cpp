@@ -92,9 +92,9 @@ int *Vector::get_row() {
     return this->element;
 }
 
-void Vector::load_vec(Vector * vec) {
-    for (int i = 0; i < std::min(this->size, vec->size); ++i) {
-        element[i] = vec->element[i];
+void Vector::load_vec(Vector vec) {
+    for (int i = 0; i < std::min(this->size, vec.size); ++i) {
+        element[i] = vec.element[i];
     }
 }
 

@@ -14,16 +14,27 @@ private:
     int *element{new int};
     int size{0};
     int len{0};
+
     void change_size(int new_size);
+
 public:
     Vector(int n);
-    int * get_row();
+
+    int *get_row();
+
     void add_number(int i, int n);
+
     void add_number(int n);
+
     int get_current() const;
+
     void show_vector() const;
+
     void show_line() const;
-    void load_vec(Vector *vec);
+
+    void load_vec(Vector vec);
+
     int length();
+
     int operator*(Vector vec);
 };
